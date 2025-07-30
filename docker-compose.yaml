@@ -1,0 +1,10 @@
+services:
+  dashboarr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - ./src/config.json:/var/www/localhost/htdocs/config.json
+      - ./src/services.json:/var/www/localhost/htdocs/services.json
