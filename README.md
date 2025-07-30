@@ -109,31 +109,31 @@ docker run -d \
 ### 1. Start the stack
 ```bash
 # Start in detached mode
-docker-compose up -d
+docker compose up -d
 
 # Start and view logs
-docker-compose up
+docker compose up
 
 # Build and start (if you made changes)
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 ### 2. Manage the stack
 ```bash
 # View logs
-docker-compose logs -f dashboarr
+docker compose logs -f dashboarr
 
 # Stop the stack
-docker-compose down
+docker compose down
 
 # Stop and remove volumes
-docker-compose down -v
+docker compose down -v
 
 # Restart a specific service
-docker-compose restart dashboarr
+docker compose restart dashboarr
 
 # Update and restart
-docker-compose pull && docker-compose up -d
+docker compose pull && docker-compose up -d
 ````
 
 ## License
