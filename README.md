@@ -4,9 +4,9 @@ A clean, modern web dashboard for managing your home media server and downloader
 
 ## Features
 
-- **Clean Interface**: Modern dark/light theme toggle with smooth transitions
+- **Clean**: Modern dark/light theme toggle with smooth transitions
 - **Simple**: Static page, configurable through json files.
-- **Low resource usage**: Memory usage around 1MB when idle.
+- **Lightweight**: Memory usage around 1MB when idle.
 
 ## Screenshot
 
@@ -138,4 +138,4 @@ docker compose pull && docker-compose up -d
 
 ## License
 
-This project is open source. Feel free to use and modify as needed.
+This project is licensed under the [MIT License](LICENSE)

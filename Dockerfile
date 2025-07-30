@@ -5,7 +5,7 @@ FROM alpine:latest
 RUN apk add --no-cache lighttpd
 
 # Copy dashboard files into the web root
-COPY . /var/www/localhost/htdocs/
+COPY src/ /var/www/localhost/htdocs/
 
 # Expose port 80
 EXPOSE 80
