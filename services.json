@@ -1,0 +1,24 @@
+[
+  {
+    "category": "Downloaders",
+    "services": [
+      { "name": "Transmission", "url": "http://raspberrypi:9091", "icon": "🌐", "description": "Web UI for rTorrent" },
+	  { "name": "Jackett", "url": "http://raspberrypi:9117", "icon": "🧥", "description": "Indexer proxy for torrents" },
+	  { "name": "Flexget", "url": "http://raspberrypi:5050", "icon": "⬇️", "description": "Media downloader" }
+    ]
+  },
+  {
+    "category": "Media Management",
+    "services": [
+      { "name": "Trakt.tv movies", "url": "https://trakt.tv/users/your-trakt-user/lists/series?sort=rank,asc", "icon": "🎬", "description": "Movie management" },
+      { "name": "Trakt.tv series", "url": "https://trakt.tv/users/your-trakt-user/lists/series?sort=rank,asc", "icon": "📺", "description": "Series management" }
+    ]
+  },
+  {
+    "category": "Media Server",
+    "services": [
+      { "name": "Jellyfin", "url": "http://raspberrypi:8096", "icon": "🍿", "description": "Stream your media" },
+      { "name": "MiniDLNA", "url": "http://raspberrypi:8200", "icon": "📡", "description": "DLNA media server" }
+    ]
+  }
+]

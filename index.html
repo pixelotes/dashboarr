@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading...</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --card-color: #1e1e1e;
+      --accent-color: #61dafb;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f0f0f0;
+      --text-color: #121212;
+      --card-color: #ffffff;
+      --accent-color: #007acc;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-color: var(--bg-color);
+      /* background-image is now set dynamically by JavaScript */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--card-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      gap: 1rem;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    #datetime, #weather {
+      font-size: 0.9rem;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      cursor: pointer;
+      font-size: 1rem;
+      border: none;
+      background: none;
+      color: var(--text-color);
+    }
+
+    main {
+      padding: 1rem;
+    }
+
+    .category-section {
+      margin-bottom: 2rem;
+    }
+
+    .category-section h2 {
+      color: var(--text-color);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      max-width: 100%;
+    }
+
+    @media (min-width: 900px) {
+      .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: none;
+      }
+    }
+
+    .card {
+      background-color: var(--card-color);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .card a {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .card a:hover {
+      text-decoration: underline;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    .error-message {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--text-color);
+      padding: 2rem;
+      background-color: var(--card-color);
+      border-radius: 12px;
+      margin: 1rem;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <header>
+    <h1 id="dashboard-title"></h1>
+    <div class="header-right">
+      <span id="datetime"></span> | <span id="weather"></span>
+      <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </div>
+  </header>
+
+  <main id="services-container"></main>
+
+  <script>
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme');
+      document.body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById('datetime').textContent = now.toLocaleString();
+    }
+
+    async function updateWeather(city) {
+      const weatherEl = document.getElementById('weather');
+      if (!city) {
+        weatherEl.textContent = '🌡️ City not configured';
+        return;
+      }
+      try {
+        const res = await fetch(`https://wttr.in/${city}?format=%t`);
+        const temp = await res.text();
+        weatherEl.textContent = `🌡️ ${city}, ${temp.trim()}`;
+      } catch (err) {
+        weatherEl.textContent = '🌡️ N/A';
+        console.error("Failed to fetch weather:", err);
+      }
+    }
+
+    function renderServices(data, container) {
+      container.innerHTML = '';
+      if (!Array.isArray(data)) {
+        throw new Error("Services data is not an array.");
+      }
+
+      for (const group of data) {
+        if (!group || !Array.isArray(group.services)) continue;
+
+        const section = document.createElement('div');
+        section.className = 'category-section';
+
+        const heading = document.createElement('h2');
+        heading.textContent = group.category || 'Uncategorized';
+        section.appendChild(heading);
+
+        const grid = document.createElement('div');
+        grid.className = 'services-grid';
+
+        for (const svc of group.services) {
+          if (!svc || !svc.name || !svc.url) continue;
+
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const link = document.createElement('a');
+          link.href = svc.url;
+          link.target = '_blank';
+          link.textContent = `${svc.icon || '🔗'} ${svc.name}`;
+
+          const description = document.createElement('p');
+          description.textContent = svc.description || '';
+
+          card.appendChild(link);
+          card.appendChild(description);
+          grid.appendChild(card);
+        }
+        section.appendChild(grid);
+        container.appendChild(section);
+      }
+      
+      if (container.children.length === 0) {
+        container.innerHTML = '<div class="error-message">No valid services found in services.json</div>';
+      }
+    }
+
+    async function initializeDashboard() {
+      const servicesContainer = document.getElementById('services-container');
+      
+      try {
+        // Fetch config and services in parallel for efficiency
+        const [configRes, servicesRes] = await Promise.all([
+          fetch('./config.json'),
+          fetch('./services.json')
+        ]);
+
+        if (!configRes.ok) throw new Error(`Could not load config.json: ${configRes.statusText}`);
+        if (!servicesRes.ok) throw new Error(`Could not load services.json: ${servicesRes.statusText}`);
+
+        const config = await configRes.json();
+        const servicesData = await servicesRes.json();
+
+        // 1. Apply configuration from config.json
+        const cleanTitle = config.dashboardName.replace(/<[^>]*>?/gm, '').trim();
+        document.title = cleanTitle || 'Dashboarr';
+        document.getElementById('dashboard-title').innerHTML = config.dashboardName || 'Dashboarr';
+        document.body.style.backgroundImage = `url('${config.wallpaperPath}')` || 'fallback.jpg';
+
+        // 2. Render all services from services.json
+        renderServices(servicesData, servicesContainer);
+
+        // 3. Initialize and schedule dynamic widgets
+        updateDateTime();
+        updateWeather(config.weatherCity);
+        setInterval(updateDateTime, 1000 * 60);
+        setInterval(() => updateWeather(config.weatherCity), 1000 * 60 * 30);
+
+      } catch (err) {
+        console.error('Dashboard initialization failed:', err);
+        document.getElementById('dashboard-title').innerHTML = 'Error';
+        servicesContainer.innerHTML = `<div class="error-message">❌ Couldn't initialize dashboard<br><small>${err.message}</small></div>`;
+      }
+    }
+
+    // Start the application
+    initializeDashboard();
+  </script>
+</body>
+</html>
